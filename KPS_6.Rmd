@@ -1,0 +1,165 @@
+```{r}
+install.packages('expm')
+library(expm)
+```
+
+
+1.
+```{r}
+A<-matrix(c(1,2,-1,0,3,-2,4,5,2,6,5,-3,0,1,5,-4), nrow=4,ncol=4,byrow=TRUE)
+B<-matrix(c(3,4,2,1,6,0,-1,1), nrow = 4, ncol=2, byrow=FALSE)
+
+wyznacznikA<-det(A)
+A%*%B
+t(B)
+solve(A)
+A%*%A%*%A
+A%^%3
+
+```
+2.
+```{r}
+A<-matrix(c(3,-3,-2,1,2,6,-2,1,3), nrow=3,ncol=3)
+B<-matrix(c(1,0,2,2,-2,-1), nrow = 2, ncol=3)
+C<-matrix(c(1,3,2,4), ncol=2,nrow=2)
+
+A%*%(t(B))
+t(C)
+solve(C)
+(solve(A)%*%t(B))%*%(C%*%C)
+```
+
+3.
+```{r}
+A<-matrix(c(2,1,3,4),nrow=2,ncol=2)
+I<-matrix(c(1,0,0,1),nrow=2,ncol=2)
+(A%*%A-6*A+4*I)
+```
+
+4.
+```{r}
+A<-matrix(c(1,-1,5,2,1,-4),nrow=2,ncol=3,byrow=TRUE)
+B<-matrix(c(-2,-1,2,3,1,4),nrow=2,ncol=3,byrow=TRUE)
+C<-matrix(c(0,-3,9,3,18,-6),nrow=2,ncol=3,byrow=TRUE)
+
+A+B
+A-B
+2*A+3*B
+t(A)-4*t(B)
+t(A+B)%*%C
+
+```
+
+
+5.
+```{r}
+A<-matrix(rep(0,20), nrow=5, ncol=4)
+matrix(0,5,4)
+w1<-w2<-w3<-w4<-w5<-c(rep(0,4))
+rbind(w1,w2,w3,w4,w5)
+
+k1<-k2<-k3<-k4<-c(rep(0,5))
+cbind(k1,k2,k3,k4)
+```
+
+6.
+```{r}
+A<-matrix(1:9,nrow=3,ncol=3, byrow=TRUE)
+nrow(A)
+ncol(A)
+sum(A)
+rowSums(A)
+colSums(A)
+colMeans(A)
+rowMeans(A)
+A[1,1]+A[3,2]
+A[,2]
+A[1,]
+```
+7.
+```{r}
+diag(3)
+matrix(c(1, rep(c(0,0,0,1),2)),nrow=3,ncol=3)
+matrix(c(1,0,0,0,1,0,0,0,1), 3)
+```
+
+8.
+```{r}
+x<-matrix(c(1:10),10,1)
+y<-matrix(c(10, 15, 13, 22, 23, 20, 18, 25, 27, 22),10,1)
+
+plot(x, y, 
+     xlab = "Staż", ylab = "Wydajnośćpracy",
+     main = "Staż pracy i wydajność pracy")
+
+cor(x, y)
+
+X<-cbind(x, rep(1,10))
+parametry<-solve(t(X)%*%X)%*%(t(X)%*%y)
+lm(y~x)
+```
+
+9.
+```{r}
+staz<-matrix(c(1:10),10,1)
+place<-matrix(c(300, 500, 405, 400, 505, 500, 605 ,600 ,600 ,500),10,1)
+
+plot(staz, place, 
+     xlab = "Staż", ylab = "Płace",
+     main = "Staż pracy i płace")
+
+cor(staz, place)
+
+X<-cbind(staz,rep(1,10))
+
+parametry<-solve(t(X)%*%X)%*%(t(X)%*%place)
+lm(place~staz)
+```
+10.
+```{r}
+y<-matrix(c(4,12,16,20,28),10,1)
+x1<-matrix(c(8,8,12,16,16),10,1)
+x2<-matrix(c(4,4,8,12,12),10,1)
+
+cor(y,x1)
+cor(y,x2)
+cor(x1,x2) #skorelowane
+X<- cbind(x1,x2,rep(1,5))
+det(t(X)%*%X)
+#nie jesteśmy w stanie obliczyc parametrów funkcji regresji, ponieważ zmienne objaśniające są powiązane zależnością liniową przez co macierz t(X)%*%X jest osobliwa i nie można jej odwrócić 
+```
+
+Szanowny Panie Profesorze,
+poniżej przesyłam kod zadań domowych.
+
+```
+#3.
+A<-matrix(c(2,1,3,4),nrow=2,ncol=2)
+I<-matrix(c(1,0,0,1),nrow=2,ncol=2)
+(A%*%A-6*A+4*I)
+
+```
+
+```
+#4
+A<-matrix(c(1,-1,5,2,1,-4),nrow=2,ncol=3,byrow=TRUE)
+B<-matrix(c(-2,-1,2,3,1,4),nrow=2,ncol=3,byrow=TRUE)
+C<-matrix(c(0,-3,9,3,18,-6),nrow=2,ncol=3,byrow=TRUE)
+
+A+B
+A-B
+2*A+3*B
+t(A)-4*t(B)
+t(A+B)%*%C
+
+```
+
+```
+#7.
+diag(3)
+matrix(c(1, rep(c(0,0,0,1),2)),nrow=3,ncol=3)
+matrix(c(1,0,0,0,1,0,0,0,1), nrow=3,ncol=3)
+
+```
+
+Z wyrazami szacunku Natalia Adamczyk

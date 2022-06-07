@@ -1,0 +1,229 @@
+
+nazwa_funkcja =  function(argument 1, argument 2, …)
+{
+ 
+   ciało funkcji
+ 
+   return(wartość lub obiekt zwracany)
+ 
+}
+Zadanie 1. Napisz funkcję iloraz(), która ma dwa argumenty x i y. Funkcja ta powinna obliczyć iloraz x/y.
+```{r}
+iloraz = function(x, y) 
+{
+  return(x/y)
+}
+iloraz(4,2)
+```
+
+Zadanie 2. Napisz funkcję suma(), której jedynym argumentem jest wektor. Funkcja ta powinna obliczyć sumę wszystkich elementów wektora.
+```{r}
+v<-c(2,3,4,5)
+suma = function(vector) 
+{
+  wynik=0
+  for(i in 1:length(vector) )
+    wynik = wynik+vector[i]
+  return(wynik)
+}
+suma(v)
+```
+
+Zadanie 3. Napisz funkcję potega() obliczającą x podniesione do potęgi y, tj. x^y
+```{r}
+potega = function(x, y) {
+ # for(i in c(1:y))
+  #  wynik = wynik*x
+ 
+   return(x^y)
+}
+potega(2,3)
+```
+Zadanie 4. Napisz funkcję stat(), która dla danego wektora oblicza: min, max, zakres, medianę, sumę, średnią i odchylenie standardowe.
+```{r}
+start = function(vector) {
+  return( rbind(c('min', 'max', 'zakres', 'medianę', 'suma', 'srednia', 'odchylenie_standardowe'), c(min(vector), max(vector), (max(vector)-min(vector)), median(vector) ,suma(vector),(suma(vector)/length(vector)), sd(vector))) )
+}
+start(v)
+```
+
+Zadanie 5. Napisz funkcję addPercent(), która dla podanej liczby pokazuje ją w formacie procentowym.
+```{r}
+addPercent = function(a) {
+  paste(sprintf("%1.2f%%", 100*a))
+}
+addPercent(v)
+```
+
+Zadanie 6. Napisz funkcję prop(), która wyznacza przedział ufności dla frakcji dla podanego poziomu ufności.
+Zadanie 7. Napisz funkcję conf mean(), która wyznacza przedział ufności dla średniej w populacji.
+Zadanie 8. Napisz funkcję outlier(), która zwraca indeks, dla którego w podanym wektorze liczb występuje tzw. outlier (wartość odstająca).
+Zadanie 9. Napisz funkcję pierwiastek(), która oblicza pierwiastki dla dowolnego równania kwadratowego.
+```{r}
+pierwiastek<-function(a,b,c) {
+  if(class(a) != 'numeric' | a==0) stop('a musi byc liczba rozna od zera')
+  if(class(b) != 'numeric' | a==0) stop('b musi byc liczba')
+  if(class(c) != 'numeric' | a==0) stop('c musi byc liczba')
+  delta<-b*b-4*a*c
+  
+  if(delta<0) stop('nie ma pierwiastków')
+  if(delta == 0) warning('Jest jeden pierwiastek podwójny')
+  if(delta>0) warning('są dwa różne pierwiastki')
+  
+  x1<-(-b-sqrt(delta))/(2*a)
+  x2<-(-b+sqrt(delta))/(2*a)
+  c(x1,x2)
+}
+
+pierwiastek(1,4,1)
+```
+
+Zadanie 10. Napisz funkcję fibonacci(), która znajduje n–ty element ciągu Fibonacciego.
+```{r}
+
+```
+
+Zadanie 11. Napisz funkcję figure(), która rysuje wykres rozrzutu dla dwóch podanych wektorów liczbowych tej samej długości.
+```{r}
+library(ggplot2)
+figure<-function(v1, v2) {
+  if(length(v1)!=length(v2)) stop('WEKTORY SĄ RÓŻNYCH WIELKOŚCI')
+  plot(v1, v2, smoother=NULL, reg.line=lm, boxplots=FALSE, main="Wykres rozrzutu dla zmiennych V1 i V2") 
+
+}
+figure(c(1,2,3,4), c(2,3,4,5,7))
+```
+
+Zadanie 12. Napisz funkcję rysunek(), która rysuje wykres rozrzutu dla dwóch podanych wektorów liczbowych z opcjonalnymi argumentami dla tworzonego wykresu.
+```{r}
+
+```
+
+Zadanie 13. Napisz funkcję transform(), która dla danego wektora x i parametru n oblicza log (x), jeśli n = 0 i x n w przeciwnym wypadku.
+```{r}
+
+```
+
+Zadanie 14. Napisz funkcję graph() która rysuje wykres rozrzutu dla dwóch podanych wektorów liczbowych i dodaje etykiety dla zadanego wektora etykiet.
+```{r}
+
+```
+
+
+Zadanie 15. Napisz funkcję samp size(), która oblicza minimalną liczebność próby dla frakcji w losowaniu prostym ze zwracaniem dla zadanego poziomu ufności 1-α i maksymalnego dopuszczalnego błędu szacunku d.
+
+Zadanie 16. Napisz funkcję bmi(), która oblicza bmi dla danej osoby. Dwa parametry tej funkcji to waga (w kg) i wzrost (w cm).
+```{r}
+bmi=function(waga, wzrost) {
+  if(class(waga) !='numeric') stop('waga musi byc liczba')
+  if(class(wzrost) !='numeric') stop('wzrost musi byc liczba')
+  if(waga>650) stop('zbyt wysoka waga')
+  if(waga<=10) stop('zbyt niska waga')
+  if(wzrost>280) stop('zbyt wysoki wzrost')
+  if(wzrost<=50) stop('zbyt niski wzrost')
+  
+  bmi_wynik<-round(waga/((wzrost/100)^2),2)
+  
+  if(bmi_wynik<=18.5) {
+    paste('niedowaga, bmi=', bmi_wynik)
+  } else if(bmi_wynik<=24){
+    paste('normal, bmi=', bmi_wynik)
+  } else if(bmi_wynik<=29){
+    paste('nadwaga, bmi=', bmi_wynik)
+  } else if(bmi_wynik<=39){
+    paste('otylosc, bmi=', bmi_wynik)
+  } else{
+    paste('powazna otylosc, bmi=', bmi_wynik)
+  }
+
+}
+bmi(46,153)
+```
+
+Zadanie 17. Napisz funkcję temp(), która dokonuje zamiany temperatury w stopniach Celsjusza na Fahrenheita i Kelvina.
+```{r}
+temp =function(x) {
+  k<- x+273.15
+  f<-9/5*x+32
+  t<-matrix(c(x, k, f),3,1)
+  rownames(t)<-c('Celsjusz', 'Fahrenheit','Kelvin')
+  colnames(t)<-c('Temperatura')
+  return(t)
+}
+temp(20)
+```
+
+Zadanie 18. Napisz funkcję, która dla zadanej długości krawędzi sześcianu a liczy jego objętość oraz pole powierzchni całkowitej.
+```{r}
+oblicz=function(a) {
+  pole<-6*a*a
+  V<-a^3
+  paste('Objetosc szescianu =', V, ', Pole powierzchni szescianu =',pole)
+}
+oblicz(2)
+```
+
+Zadanie 19. Napisz funkcję, która dla zadanego promienia r i wysokości h walca wyznacza jego objętość, pole podstawy oraz pole powierzchni całkowitej.
+```{r}
+oblicz=function(r,h) {
+  pole_podst<-round(pi*r^2,2)
+  pole_pow<-round(2*pi*r*h + 2*pole_podst,2)
+  V<-round(pole_podst*h,2)
+  paste('Objetosc walca=', V, ', Pole powierzchni walca=',pole_pow, ',pole podstawy=', pole_podst)
+}
+oblicz(2,5)
+
+```
+Zadanie 20. Napisz funkcję ptrapezu(), która służy do wyliczania pola trapezu o podstawach długości a i b oraz wysokości h.
+```{r}
+ptrapezu=function(a,b,h) {
+  m<-matrix(c(a,b,h,((a+b)*h/2)),4,1)
+  rownames(m)<-c('gorna podstawa','dola podstawa','wysokosc','pole')
+  colnames(m)<-c('Trapez')
+  return(m)
+}
+ptrapezu(2,4,2)
+```
+
+Zadanie 21. Ciąg kolejnych różnic dla danego ciągu liczb x1, x2, x3, x4, . . . jest ciągiem (x2−x1),(x3−x2),(x4−x3), . . .. Napisz funkcję roznice(), która oblicza kolejne różnice elementów pewnego wektora.
+```{r}
+roznice<-function(vector) {
+  wynik<-c()
+  for(i in c(1:length(vector))) {
+    wynik[length(wynik)+1]<-vector[i]-vector[i-1]
+  }
+  return(wynik)
+}
+roznice(c(6,3,87,3,66))
+```
+
+
+Zadanie 22. Utwórz funkcję, która zwróci TRUE, jeśli dana liczba całkowita znajduje się wewnątrz pewnego wektora liczbowego.
+```{r}
+sprawdz<-function(vector, liczba) {
+  return(liczba%in%vector)
+}
+sprawdz(v,78)
+```
+
+Zadanie 23. Napisz funkcję, która dla danej liczby całkowitej obliczy, ile ma ona dzielników (innych niż 1 i ona sama). Wyświetl wszystkie dzielniki tej liczby.
+```{r}
+
+```
+
+Zadanie 24. Napisz funkcję, która dla dwóch pojedynczych słów sprawdzi czy jedno jest anagramem drugiego.
+```{r}
+
+```
+
+Zadanie 25. Napisz funkcję, która dla zadanej długości a trójkąta równobocznego policzy jego wysokość h, pole powierzchni oraz obwód.
+```{r}
+trojkat_dane<-function(a) {
+  m<-matrix(c(a*sqrt(3), a*a*sqrt(3)/2, 3*a),3,1)
+  rownames(m)<-c('wysokosc',' pole powierzchni', 'obwod')
+  return(m)
+}
+trojkat_dane(3)
+class(trojkat_dane(2)[2])
+```
+

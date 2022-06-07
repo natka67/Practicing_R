@@ -1,0 +1,224 @@
+Ładowanie pakietów do czytania Excel'a
+```{r}
+library(readxl)
+library(dplyr)
+```
+
+aby unknac nieporozumienia gdy pare pakietow ma funkcje o tej samej nazwie, aby wybrać konkretmną używamy zapisu: dplyr::filter
+%>%
+
+Zadanie 1. Zaimportuj plik gospodarstwa.xlsx. Zapisz go pod nazwą „dane”.(Import plików)
+```{r}
+dane<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=1)
+zmienne<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=2, range='A2:B18')
+etykiety<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=3, range='A2:C70')
+```
+
+Zadanie 2. Utwórz zbiór, w którym są gospodarstwa ze wsi.
+```{r}
+zad2<-dane[dane$klm==6,]
+zad2dpl<-dane%>%filter(klm==6) #dane%>%dplyr::filter(klm==6)
+
+identical(zad2, zad2dpl)
+```
+
+Zadanie 3. Utwórz zbiór, w którym są gospodarstwa o dochodach > 2000 zł.
+```{r}
+zad3<- dane[dane$dochg>2000,]
+zad3dpl<- dane%>%filter(dochg>2000)
+zad3_dpl_with_na<- dane%>%filter(dochg>2000 | is.na(dochg))
+
+identical(zad3, zad3dpl)
+#wychodzi, FALSE ponieważ klasyczny R bierze też wiersze puste a dplyr usuwa wiersze bez danych w kolumnie dochg
+```
+
+Zadanie 4. Utwórz zbiór, który zawiera gospodarstwa z województwa wielkopol- skiego oraz które zamieszkują wieś i mają dochody powyżej 3000 zł.
+```{r}
+zad4 <- dane%>%filter(woj==30, klm==6, dochg>3000)
+```
+
+Zadanie 5. Wybierz gospodarstwa domowe z województwa dolnośląskiego i mazo- wieckiego z miast powyżej 500 tys. mieszkańców.
+```{r}
+zad5<-dane%>%filter(woj%in%c('02','14'), klm==1)
+```
+
+Zadanie 6. Losowo wybierz zbiór 30% gospodarstw domowych.
+```{r}
+zad6<-dane%>%slice_sample(prop=0.3, replace=FALSE) #losowanie 30% gospodarstw bez zwracania
+zad6_dodatkowe<-dane%>%slice_sample(n=100, replace=TRUE) #losowanie 100 gospodarstw ze zwracania
+```
+
+Zadanie dodatkowe. Zagraj w toto lotka
+```{r}
+toto <- as.data.frame(1:49)
+wygrana<- toto%>%slice_sample(n=6, replace=FALSE)
+View(wygrana)
+```
+
+
+Zadanie 7. Losowo wybierz 100 gospodarstw.
+```{r}
+zad7<-dane%>%slice_sample(n=100, replace=FALSE) #losowanie 100 gospodarstw BEZ zwracania
+```
+
+
+Zadanie 8. Wybierz gospodarstwa domowe z wierszy 10–15.
+```{r}
+zad8<-dane%>%slice(10:15)
+```
+
+
+Zadanie 9. Wybierz gospodarstwa domowe z danymi tylko dla kolumny woj i wydg ale w odniesieniu jedynie dla gospodarstw z województwa wielkopolskiego.
+```{r}
+zad9<-dane%>%filter(woj=='30')%>%select(woj,wydg)
+```
+
+Zadanie 10. Wybierz wszystkie gospodarstwa, których dochód jest z przedziału 3000–4000 i zostaw tylko tą zmienną w zbiorze.
+```{r}
+zad10<-dane%>%filter(between(dochg,3000,4000))%>%select(dochg)
+```
+
+Zadanie 11. Wybierz wszystkie kolumny od klm do zut włącznie.
+```{r}
+zad11<-dane%>%select('klm':'zut')
+```
+
+
+Zadanie 12. Wyświetl nazwy wszystkich zmiennych w zbiorze gospodarstwa.
+```{r}
+nazwy<-names(dane)
+```
+
+Zadanie 13. Wybierz wszystkie kolumny, które zaczynają się na literę d.
+```{r}
+zad13<- dane%>%select(starts_with('d'))
+```
+
+Zadanie 14. Utwórz nową zmienną roznica=dochg-wydg. Pozostaw w zbiorze zmienne dochg, wydg i roznica.
+```{r}
+zad13<-dane%>%mutate(roznica=dochg-wydg)%>%select(dochg,wydg,roznica)
+```
+
+Zadanie 15. Utwórz nowe zmienne x=ln(dochg) oraz y=ln(wydg). Pamiętaj, że ln liczymy dla dodatnich wartości.
+```{r}
+install.packages('SciViews')
+library(SciViews)
+
+zad15<-dane%>%filter(dochg>0 , wydg>0)%>%mutate(x=ln(dochg),y=ln(wydg))
+```
+
+Zadanie Domowe: Wybierz gospodarstwa z woj. kuj-pom zamieszkujące wieś . Utwórz zmienną doch5, która jest o 5% większa od dochodu(weź dochody dodatnie). Zostaw zmienne doch, woj,doch5.
+```{r}
+domowe<-dane%>%filter(woj=='04', klm==6, dochg>0)%>%mutate(doch5 = 1.05*dochg)%>%select(dochg,woj,doch5)
+domowe
+```
+
+Zadanie 16. Dokonaj zamiany nazwy zmiennych dochg na dochod oraz wydg na wydatki.
+```{r}
+zad16<-dane %>% rename( dochód=dochg, wydatki = wydg )
+zad16
+```
+
+Zadanie 17. Oblicz ile było gospodarstw domowych ze względu na poszczególne warianty zmiennej klm.
+```{r}
+zad17b<-table(dane$klm )
+zad17a<- dane%>% group_by(klm) %>% count()
+xtable(zad17a)
+```
+
+Zadanie 18. Oblicz ile było gospodarstw domowych w poszczególnych województwach.
+```{r}
+zad18<- dane %>% group_by(woj) %>% count()
+```
+
+Zadanie 19. Oblicz ile było gospodarstw domowych w poszczególnych województwach ze względu na warianty zmiennej d61 (Sytuacja materialna gospodarstwa).
+```{r}
+zad19<- dane %>% group_by(woj, d61) %>% count()
+```
+
+Zadanie 20. Oblicz średnie wydatki wszystkich gospodarstw domowych.
+```{r}
+dane%>%summarise(srednia = mean(wydg, na.rm=TRUE))
+```
+
+Zadanie 21. Oblicz średnie wydatki i dochody wszystkich gospodarstw domowych.
+```{r}
+zad21<- dane%>% filter(wydg>=0, dochg>=0) %>% summarise(srednia_wydg=mean(wydg, na.rm=TRUE), srednia_doch=mean(dochg, na.rm=TRUE))
+```
+
+Zadanie 22. Oblicz średnią, min, max, odchylenie standardowe oraz medianę wydatków.
+```{r}
+zad22<- dane%>% filter(wydg>=0) %>% summarise(srednia_wydg=mean(wydg, na.rm=TRUE), min=min(wydg, na.rm=TRUE), max=max(wydg, na.rm=TRUE), od_stan=sd(wydg, na.rm=TRUE), mediana=median(wydg, na.rm=TRUE))
+```
+
+Zadanie 23. Oblicz średnie wydatki w ramach klasy miejscowości.
+```{r}
+zad23<- dane %>%  group_by(klm) %>% summarise(sr=mean(wydg, na.rm=TRUE)) %>%round(1)
+```
+
+Zadanie 24. Stwórz wykres słupkowy z liczebnościami dla klasy miejscowości.
+```{r}
+dane%>%group_by(klm) %>% summarise(n=n())%>%as.matrix()%>%t()%>%barplot()
+```
+
+Zadanie 25. Posortuj rosnąco zbiór gospodarstw domowych ze względu na wydatki.
+```{r}
+dane%>%arrange(wydg)
+```
+
+Zadanie 26. Posortuj malejąco zbiór gospodarstw domowych ze względu na dochody.
+```{r}
+dane %>% arrange(dochg, desc=TRUE)
+```
+
+Zadanie 27. Posortuj malejąco kod klasy miejscowości a w ramach tej klasy rosnąco wydatki.
+```{r}
+zad27<- dane %>% arrange(desc(klm), wydg)
+```
+
+Zadanie 28. Zrób wykres pudełkowy powierzchni mieszkań (zmienna d36) według klasy miejscowości.
+```{r}
+
+```
+
+Zadanie 29. Zrób wykres pudełkowy powierzchni mieszkań według źródła utrzy- mania dla gospodarstw z województwa mazowieckiego.
+```{r}
+
+```
+
+Zadanie 30. Utwórz zbiór wlkp. W zbiorze tym powinny się znaleźć gospodarstwa z województwa wielkopolskiego, których dochód jest z przedziału 2500–3000 zł. Dochód powinien być posortowany malejąco. Oprócz dochodu mają się znaleźć 4 inne zmienne: klm,dochg, woj, zut i wydg. Na tym zbiorze, dla zmiennych dochg i wydg, stwórz korelacyjny diagram rozrzutu.
+```{r}
+zad30<-dane %>% filter(woj=='30' & between(dochg, 2500,3000)) %>% arrange(desc(dochg)) %>% select(klm, woj, zut, wydg, dochg)
+
+plot(zad30$dochg, zad30$wydg)
+```
+
+Zadanie 31. Utwórz dwie nowe zmienne roznica=dochg-wydg oraz doch os=dochg/los i pozostaw je jako jedyne w zbiorze danych.
+```{r}
+summary(dane)
+zad31<-dane%>%filter(!is.na(dochg), dochg>=0) %>% mutate(roznica=dochg-wydg, doch_os=dochg/los) %>%select(roznica,doch_os)
+summary(zad31)
+```
+
+Zadanie 32. Utwórz nową zmienną „klasa”, która przyjmuje dwie wartości: „wieś”, gdy gospodarstwo jest ze wsi oraz „miasto”, gdy gospodarstwo jest z miasta.
+```{r}
+summary(dane) #sprawdzamy które dane mają braki dane
+
+zad32 <-dane %>% mutate(klasa=case_when(klm==6~'wieś', TRUE~ 'miasto'))
+```
+
+Zadanie 33. Utwórz nową zmienną „pow”, która przyjmuje trzy warianty: „do 60”, „(60-100>” oraz „powyżej 100” w zależności od wartości zmiennej d36 (powierzchnia mieszkań).
+```{r}
+summary(dane$d36) #brak braków danych
+zad33<-dane %>% mutate(pow=case_when(d36<=60 ~ 'do 60', d36>100~'powyzej 100', TRUE ~ '(60-100>'))
+table(zad33$pow)
+```
+```{r}
+zad34<-dane %>% mutate(dochod=case_when(is.na(dochg)~'Brak danych', dochg<=2000~'Niski',dochg<=5000~'Sredni',TRUE~'Wysoki'))
+```
+
+```{r}
+#Oblicz srednia i mediane powierzchni w przekroju województw i wygeneruj kod  LaTexowy do tabeli
+tabela<-dane %>%group_by(woj)%>%summarise(srednia=round(mean(d36, na.rm=TRUE)), round(mediana=median(d36, na.rm=TRUE)))
+```
+

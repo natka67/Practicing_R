@@ -1,0 +1,83 @@
+[18:40] Marcin Szymkowiak
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+# Metoda Topsis w program R - ujęcie macierzowe
+library(readxl)
+library(dplyr)
+library(tmap)
+library(tmaptools)
+library(sf)
+library(rgdal)
+library(topsis)
+library(ggplot2)
+
+# Wczytujemy dane z pliku Powiaty.xlsx
+powiaty <- read_xlsx('dane/Powiaty.xlsx',sheet=1)
+etykiety <- read_xlsx('dane/Powiaty.xlsx',sheet=2)
+powiaty$JPT_KOD_JE <- as.character(powiaty$JPT_KOD_JE)
+
+# 1. Utworzenie znormalizowanej macierzy danych zij
+xij <- powiaty %>% select(3:8) %>% as.matrix()
+zij <- matrix(,nrow(xij),ncol(xij))
+
+for(j in 1:6) {
+  zij[,j] <- round(xij[,j]/sqrt(sum(xij[,j]^2)),2)
+}
+
+
+# 2. Tworzymy wagi wj
+wj <- rep(1,6)
+vij <- wj*zij
+
+#3. Tworzymy wektor a+ i a-
+apl <- c(max(vij[,1]),max(vij[,2]),min(vij[,3]),min(vij[,4]),min(vij[,5]),min(vij[,6]))
+
+ami <- c(min(vij[,1]),min(vij[,2]),max(vij[,3]),max(vij[,4]),max(vij[,5]),max(vij[,6]))
+
+# 4. Obliczenie odległości euklidesowych badanych obiektów od rozwiązania idealnego i antyidealnego
+
+dpl <- matrix(,nrow(xij),1)
+dmi <- matrix(,nrow(xij),1)
+
+for(i in 1:nrow(xij)){
+  dpl[i,1] <- sqrt(sum((vij[i,]-apl)^2))
+  dmi[i,1] <- sqrt(sum((vij[i,]-ami)^2))
+}
+
+# 5. Wyznaczenie współczynnika rankingowego określającego podobieństwo obiektów do rozwiązania idealnego.
+R <- round(dmi/(dmi+dpl),2)
+powiaty$R <- as.vector(R)
+
+# Robimy to samo z pakietem topsis (w tym pakiecie jest funkcja topsis)
+i <- c('+','+','-','-','-','-')
+R1 <- topsis(xij,wj,i)
+# print(R1)
+powiaty$R1 <- R1
+
+# Tworzymy wykres z rankingiem
+powiaty %>% arrange(R) %>%
+  ggplot(aes(x=factor(Powiaty,levels=Powiaty),y=R)) +
+    geom_point(stat="identity",size=4)+
+    coord_flip() +
+    theme_bw()+
+    geom_segment(aes(y=0,x=Powiaty,yend=R,xend=Powiaty))+
+    labs(y='R',x='Powiaty')
+
+# Tworzymy kartogram z miarą R dla powiatów woj. 
+powiaty1 <- st_read('powiaty/Powiaty.shp')
+powiaty.wlkp <- powiaty1[substr(powiaty1$JPT_KOD_JE,1,2)=='30',]
+data_all_wlkp <- left_join(powiaty.wlkp,powiaty)
+
+tm_shape(data_all_wlkp) +
+    tm_polygons('R',
+                border.col='black',
+                title='Topsis',
+                breaks=quantile(data_all_wlkp$R)) +
+  tm_text('Powiaty', size=0.7) +
+  tm_shape(data_all_wlkp)+
+  tm_text('R', size=0.7,ymod=-0.5)
+```
+

@@ -1,0 +1,233 @@
+
+Ładowanie pakietów do czytania Excel'a
+```{r}
+library(readxl)
+```
+
+Zadanie 1. Zaimportuj plik gospodarstwa.xlsx. Zapisz go pod nazwą „dane”.(Import plików)
+```{r}
+dane<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=1)
+zmienne<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=2, range='A2:B18')
+etykiety<-read_xlsx(path='dane/gospodarstwa.xlsx', sheet=3, range='A2:C70')
+```
+
+Zadanie 2. Utwórz zbiór, w którym są gospodarstwa ze wsi.
+```{r}
+View(etykiety)
+zad2<-dane[dane['klm']==6,] #pobierz wszystkie kolumny dla wierszy które w kolumnie klm przyjmuje wartość 6
+```
+
+Zadanie 3. Utwórz zbiór, w którym są gospodarstwa o dochodach > 2000 zł.
+```{r}
+zad3 <- dane[dane$dochg>2000,]
+nrow(zad3)
+```
+
+Zadanie 4. Utwórz zbiór, który zawiera gospodarstwa z województwa wielkopolskiego oraz które zamieszkują wieś i mają dochody powyżej 3000 zł.
+```{r}
+zad4<- dane[dane$woj=='30' & dane$klm ==6 & dane$dochg>3000,]
+nrow(zad4)
+```
+
+Zadanie 5. Wybierz gospodarstwa domowe z województwa dolnośląskiego i mazowieckiego z miast powyżej 500 tys. mieszkańców.
+```{r}
+zad5a<- dane[(dane$woj=='02' & dane$klm==1) | (dane$woj=='14' & dane$klm==1),]
+nrow(zad5a)
+
+zad5b<- dane[ dane$klm==1 & dane$woj %in% c('02','14'),]
+nrow(zad5b)
+```
+
+Zadanie 6. Losowo wybierz zbiór 30% gospodarstw domowych.
+```{r}
+
+```
+
+Zadanie 7. Losowo wybierz 100 gospodarstw.
+```{r}
+
+```
+
+Zadanie 8. Wybierz gospodarstwa domowe z wierszy 10–15.
+```{r}
+
+```
+
+Zadanie 9. Wybierz gospodarstwa domowe z danymi tylko dla kolumny woj i wydg ale w odniesieniu jedynie dla gospodarstw z województwa wielkopolskiego.
+```{r}
+zad9<- dane[dane$woj=='30', c('woj', 'wydg')]
+#zad9<- dane[dane$woj=='30', c(2,16)]
+nrow(zad9)
+ncol(zad9)
+```
+
+Zadanie 10. Wybierz wszystkie gospodarstwa, których dochód jest z przedziału 3000–4000 i zostaw tylko tą zmienną w zbiorze.
+```{r}
+library(dplyr)
+
+zad10a<-dane[dane$dochg>=3000 & dane$dochg<=4000, 'dochg']
+nrow(zad10a)
+
+zad10b<-dane[between(dane$dochg,3000,4000), 'dochg'] #potrzebna biblioteka dplyr
+nrow(zad10b)
+
+zad10a
+```
+
+Zadanie 11. Wybierz wszystkie kolumny od klm do zut włącznie.
+```{r}
+
+
+```
+
+Zadanie 12. Wyświetl nazwy wszystkich zmiennych w zbiorze gospodarstwa.
+```{r}
+
+```
+
+Zadanie 13. Wybierz wszystkie kolumny, które zaczynają się na literę d.
+```{r}
+
+```
+
+Zadanie 14. Utwórz nową zmienną roznica=dochg-wydg. Pozostaw w zbiorze zmienne dochg, wydg i roznica.
+```{r}
+
+```
+
+Zadanie 15. Utwórz nowe zmienne x=ln(dochg) oraz y=ln(wydg). Pamiętaj, że ln liczymy dla dodatnich wartości.
+```{r}
+
+```
+
+Zadanie 16. Dokonaj zamiany nazwy zmiennych dochg na dochod oraz wydg na wydatki.
+```{r}
+
+```
+
+Zadanie 17. Oblicz ile było gospodarstw domowych ze względu na poszczególne warianty zmiennej klm.
+```{r}
+tabela_klm <- table(dane$klm)
+rownames(tabela_klm) <- c(etykiety$Etykieta[1:6])
+print(tabela_klm)
+```
+
+Zadanie 18. Oblicz ile było gospodarstw domowych w poszczególnych województwach.
+```{r}
+tabela_woj<-table(dane$woj)
+rownames(tabela_woj) <- c(etykiety$Etykieta[7:22])
+print(tabela_woj)
+```
+```{r}
+tab_woj_2<-as.matrix(table(dane$woj))
+rownames(tab_woj_2) <- c(etykiety$Etykieta[7:22])
+colnames(tab_woj_2)<-'liczba gospodarstw domowych'
+print(tab_woj_2)
+```
+
+
+Zadanie 19. Oblicz ile było gospodarstw domowych w poszczególnych województwach ze względu na warianty
+zmiennej d61 (Sytuacja materialna gospodarstwa).
+```{r}
+zad19<-table(dane$woj, dane$d61)
+rownames(zad19) <- c(etykiety$Etykieta[7:22])
+colnames(zad19) <- c(etykiety$Etykieta[58:62])
+zad19
+```
+
+Zadanie 20. Oblicz średnie wydatki wszystkich gospodarstw domowych.
+```{r}
+help(mean)
+mean(dane$wydg, na.rm = TRUE)
+summary(dane$wydg)
+```
+
+Zadanie 21. Oblicz średnie wydatki i dochody wszystkich gospodarstw domowych.
+```{r}
+
+```
+
+Zadanie 22. Oblicz średnią, min, max, odchylenie standardowe oraz medianę wydatków.
+```{r}
+
+```
+
+Zadanie 23. Oblicz średnie wydatki w ramach klasy miejscowości.
+```{r}
+help(by)
+by(dane$wydg, dane$klm, mean, na.rm=TRUE)
+by(dane$wydg, dane$klm, summary)
+```
+
+Zadanie 24. Stwórz wykres słupkowy z liczebnościami dla klasy miejscowości.
+```{r}
+tabel_klm <-table(dane$klm)
+barplot(tabela_klm,
+        col='blue', 
+        xlab='Klasa miejscowości', 
+        ylab='Liczba gospodarstw', 
+        main='Liczba gospodarstwa w przekroju klm',
+        names.arg=etykiety$Etykiety[1:6])
+```
+
+Zadanie 25. Posortuj rosnąco zbiór gospodarstw domowych ze względu na wydatki. Zadanie 26. Posortuj malejąco zbiór gospodarstw domowych ze względu na dochody.
+```{r}
+
+```
+
+Zadanie 27. Posortuj malejąco kod klasy miejscowości a w ramach tej klasy rosnąco wydatki.
+```{r}
+
+```
+
+Zadanie 28. Zrób wykres pudełkowy powierzchni mieszkań (zmienna d36) według klasy miejscowości.
+```{r}
+
+```
+
+Zadanie 29. Zrób wykres pudełkowy powierzchni mieszkań według źródła utrzy- mania dla gospodarstw z województwa mazowieckiego.
+```{r}
+
+```
+
+Zadanie 30. Utwórz zbiór wlkp. W zbiorze tym powinny się znaleźć gospodarstwa z województwa wielkopolskiego, których dochód jest z przedziału 2500–3000 zł. Dochód powinien być posortowany malejąco. Oprócz dochodu mają się znaleźć 4 inne zmienne: klm, woj, zut i wydg. Na tym zbiorze, dla zmiennych dochg i wydg, stwórz korelacyjny diagram rozrzutu.
+```{r}
+
+```
+
+Zadanie 31. Utwórz dwie nowe zmienne roznica=dochg-wydg oraz doch os=dochg/los i pozostaw je jako jedyne w zbiorze danych.
+```{r}
+
+```
+
+Zadanie 32. Utwórz nową zmienną „klasa”, która przyjmuje dwie wartości: „wieś”, gdy gospodarstwo jest ze wsi oraz „miasto”, gdy gospodarstwo jest z miasta.
+```{r}
+
+```
+
+Zadanie 33. Utwórz nową zmienną „pow”, która przyjmuje trzy warianty: „do 60”, „(60-100>” oraz „powyżej 100” w zależności od wartości zmiennej d36 (powierzchnia mieszkań).
+```{r}
+
+```
+
+Domowe
+
+Zadanie A: Zrób wykres słupkowy dla województw
+```{r}
+
+tab_woj<-table(dane$woj)
+print(tab_woj)
+barplot(tab_woj,
+        col='blue',
+        xlab='Województwa w Polsce', 
+        ylab='Liczba gospodarstw domowych w województwach', 
+        names.arg=etykiety$Etykieta[7:22])
+```
+
+Zadanie B: wybierz gospodarstwa, które mają powierzchnie od 100 do 150m2 z wojewodztwa mazowieckiego. Zostaw 4 kolumny: d36, woj, wydg, dochg.
+```{r}
+library(dplyr)
+gosp<-dane[between(dane$d36,100,150) & dane$woj=='14',c('d36','woj','wydg','dochg')]
+print(gosp)
+```
+

@@ -1,0 +1,197 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+#Zadanie 1. Stwórz wektor złożony z następujących liczb: 2, 6, 8, 6, 4, 3.
+c(2,6,8,4,3)
+```
+
+```{r}
+#Zadanie 2. Stwórz wektor złożony z kolejnych liczb naturalnych od 1 do 100
+c(1:100)
+```
+
+```{r}
+#Zadanie 3. Stwórz wektor złożony z kolejnych parzystych liczb naturalnych od 2 do 100.
+seq(from=2, to=100, by=2)
+```
+
+```{r}
+#Zadanie 4. Stwórz wektor złożony z kolejnych liczb nieparzystych postaci: 99, 95, 91, 87,..., 47.
+seq(from=99, to=47, by=-2)
+```
+
+Zadanie 5. Stwórz wektor złożony z kolejnych nazw miesięcy w języku angielskim.
+```{r}
+month.name
+```
+Zadanie 6. Stwórz wektor złożny z kolejnych liter alfabetu łacińskiego.
+```{r}
+letters
+LETTERS
+```
+
+Zadanie 7. Wygeneruj wektor kolejnych liczb parzystych 2, 4,..., 20. W wektorze
+tym nie powinno być liczb 6 oraz 10. Innymi słowy wygeneruj wektor 2, 4, 8, 12, 14,
+16, 18, 20.
+```{r}
+setdiff(seq(2,20,2), c(6,10))
+seq(2,20,2)[- c(3,5)]
+```
+Zadanie 8. Z wektora kolejnych miesięcy pobierz miesiące należące do II oraz IV
+kwartału.
+
+```{r}
+c(month.name[4:6],month.name[10:12])
+month.name[c(4:6,10:12)]
+```
+
+Zadanie 9. Student otrzymał następujące oceny z przedmiotów A, B, C i D: A-3,
+B-4, C- 5, D-5. Stwórz wektor przechowujący oceny uzyskane przez studenta wraz
+z nazwami przedmiotów.
+```{r}
+c(A=3,B=4,C=5,D=5)
+```
+
+Zadanie 10. Wygeneruj wektor złożony z kolejnych nazw miesięcy (po angielsku)
+i zastąp nazwy trzech pierwszych miesięcy ich polskimi odpowiednikami.
+```{r}
+month.name[1:3]<-c('Styczen','Luty','Marzec')
+
+```
+
+Zadanie 11. Zapisz w postaci wektora wiek kolejnych 10 osób: 25, 35, 43, 28, 47, 77,
+55, 66, 25, 25. Dla tak stworzonego wektora oblicz następujące statystyki opisowe:
+minimum, maksimum, średnia, odchylenie standardowe, rozstęp, kwartyle, kurtoza,
+współczynnik skośności (asymetrii).
+```{r}
+library(moments)
+wiek<-c(25, 35, 43, 28, 47, 77,55, 66, 25, 25)
+c(min<-min(wiek),max<- max(wiek), srednia<-mean(wiek),odch<- sd(wiek), rozstep<-(max(wiek)- min(wiek)), q1<-quantile(wiek, 0.25), median<-quantile(wiek, 0.5), q3<-quantile(wiek, 0.75), kurtoza<-kurtosis(wiek), skosnosc<-skewness(wiek))
+summary(wiek)
+```
+
+Zadanie 12. Wygeneruj w R 1000 liczb z rozkładu normalnego dla zmiennej losowej X opisującej wzrost dorosłych osób (średnia 176 cm i odchylenie standardowe 9 cm).
+Dla tak utworzonego wektora oblicz następujące statystyki opisowe: minimum, maksimum, średnia, odchylenie standardowe, rozstęp, kwartyle, kurtoza, współczynnik
+skośności (asymetrii). Stwórz histogram wzrostu.
+```{r}
+set.seed(1)
+wzrost<-rnorm(1:1000, 176,9)
+hist(wzrost, col='blue', xlab='wzrost osob', ylab='liczba osob')
+```
+
+Zadanie 13. Stwórz wektora a z liczbami od 100 do 103 oraz wektor b z liczbami od 4 do 7. Utwórz nowy wektory d będący połączeniem wektora b i a (w takiej kolejności). Wyświetl go.
+```{r}
+a<-c(100:103)
+b<-c(4:7)
+d<-c(b,a)
+d
+```
+
+Zadanie 14. Stwórz wektor imię zawierający imiona trójki Twoich przyjaciół. Potem stwórz wektor wiek zawierający kolejno wiek Twojej trójki przyjaciół. Następnie
+stwórz ramkę danych osoby złożoną z wektorów imię oraz wiek. Wylicz średnią wieku
+przyjaciół.
+```{r}
+wiek<-c(12,34,14)
+imiona<-c('Kasia',' Asia','Basia')
+data.frame(imiona,wiek)
+```
+
+Zadanie 15. Utwórz wektor złożony z kolejnych liczb naturalnych 1, 2, 3,..., 100.
+Następnie elementy tego wektora, które są mniejsze od 10 lub większe od 90, przemnóż przez 5, a pozostałe elementy podziel przez 5.
+```{r}
+n<-c(1:100)
+for(i in n)
+  if( (i<10) | (i>90))
+    n[i]=5*n[i]
+n
+```
+
+Zadanie 16. Utwórz wektor postaci: 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3.
+```{r}
+rep(1:3,5)
+```
+
+Zadanie 17. Utwórz wektor zawierający Twoje imię 100 razy.
+
+```{r}
+rep("Natalia", 100)
+```
+
+Zadanie 18. Wygeneruj wektor 20 liczb w równych odstępach między 1 a 100.
+```{r}
+
+seq(from=1, to=100,length=20)
+```
+
+Zadanie 19. Utwórz wektor zawierający jedną jedynkę, dwie dwójki,..., dziewięć
+dziewiątek.
+
+```{r}
+rep(1:9,1:9)
+  
+```
+
+Zadanie 20. Wygeneruj sekwencję zawierającą osiem czwórek, następnie siedem
+szóstek i na koniec dziewięć trójek. Zapisz ją w macierzy M o sześciu wierszach
+i czterech kolumnach.
+
+```{r}
+
+```
+
+
+Zadanie 21. Utwórz wektor liczb naturalnych od 1 do 1000, a następnie zamień
+liczby parzyste na ich odwrotności.
+
+```{r}
+x<-c(1:10)
+x<-ifelse((x%%2) == 0, (1/x), x)
+x
+```
+
+```{r}
+natural <- c(1:1000)
+for(i in natural)
+{
+  if((natural[i]%%2)==0)
+  {
+    natural[i]=(1/natural[i])
+  }
+}
+```
+
+
+Zadanie 22. Skonstruuj wektor x używając poniższego kodu:
+x <- c(NA, 3, 14, NA, 33, 17, NA, 41).
+• zlicz liczbę braków,
+• wyznacz średnią arytmetyczną nie biorąc braków pod uwagę,
+• usuń braki w danych,
+• zastąp braki liczbą 11.
+
+```{r}
+
+```
+
+
+Zadanie 23. Walec o wysokości h oraz promieniu podstawy r ma objętość V = πr2h
+oraz pole powierzchni P = 2πr(r + h). Dla długości promienia 1:5 oraz wysokości
+4:8 oblicz odpowiednie objętości i pola powierzchni. Skonstruuj ramkę danych o kolumnach: r, h, V, P.
+Zadanie 24. Wygeneruj z rozkładu normalnego N(5000,500) 1000 liczb (x - dochód). Zmienną y (wydatki) utwórz w następujący sposób: y = 0.2x+ 200 + , gdzie
+ ∼ N(300, 50). Wyznacz współczynnik korelacji liniowej Pearsona pomiędzy dochodem a wydatkami. Sporządź korelacyjny diagram rozrzutu pomiędzy tymi dwiema
+zmiennymi.
+
+```{r}
+
+```
+
+
+Zadanie 25. Dla zmiennej dochód z zadania 24 utwórz wykres typu boxplot (pudełkowy).
+
+```{r}
+
+```
+
+
